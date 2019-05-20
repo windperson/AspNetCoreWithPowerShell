@@ -34,6 +34,8 @@ namespace AspNetCoreWithPowerShell
                 .UseSerilog((hostingContext, loggerConfiguration) =>
                 {
                     loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration)
+                    .MinimumLevel.Debug()
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                     .Enrich.FromLogContext()
                     .WriteTo.Console()
                     .WriteTo.Trace();

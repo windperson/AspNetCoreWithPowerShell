@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewData["Title"] = "CallPwshDemo";
+    var baseUrl = ViewData["baseUrl"];
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Call PowerShell Core script example</h1>
+
+<div>
+    <form enctype="multipart/form-data" method="post" action='@($"{baseUrl}/api/InvokePwshDemo/upload")' id="ajaxUploadForm" novalidate="novalidate">
+
+        <fieldset>
+            <legend style="padding-top: 10px; padding-bottom: 10px;">Uploaded File to see demo</legend>
+
+            <div class="col-xs-12" style="padding: 10px;">
+                <div class="col-xs-4">
+                    <label>Description</label>
+                </div>
+                <div class="col-xs-7">
+                    <textarea rows="2" placeholder="Description" class="form-control" name="description" id="description"></textarea>
+                </div>
+            </div>
+
+            <div class="col-xs-12" style="padding: 10px;">
+                <div class="col-xs-4">
+                    <label>Upload a file and powershell script will display its content</label>
+                </div>
+                <div class="col-xs-7">
+                    <input type="file" name="file" id="fileInput" />
+                </div>
+            </div>
+
+            <div class="col-xs-12" style="padding: 10px;">
+                <div class="col-xs-4">
+                    <input type="submit" value="Upload" id="ajaxUploadButton" class="btn" />
+                </div>
+                <div class="col-xs-4">
+                    <input type="reset" value="Reset" class="btn" />
+                </div>
+            </div>
+
+        </fieldset>
+    </form>
+</div>
