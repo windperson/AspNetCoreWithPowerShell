@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Management.Automation;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AspNetCoreWithPowerShell.Filters;
 using AspNetCoreWithPowerShell.Models;
 using AspNetCoreWithPowerShell.Utils;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,9 +20,11 @@ namespace AspNetCoreWithPowerShell.Controllers
     public class InvokePwshDemoController : ControllerBase
     {
         private readonly ILogger<InvokePwshDemoController> _logger;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public InvokePwshDemoController(ILogger<InvokePwshDemoController> logger)
+        public InvokePwshDemoController(IHostingEnvironment hostingEnvironment, ILogger<InvokePwshDemoController> logger)
         {
+            _hostingEnvironment = hostingEnvironment;
             _logger = logger;
         }
 
@@ -43,11 +47,41 @@ namespace AspNetCoreWithPowerShell.Controllers
 
                 var fileContent = await file.ReadAsStringAsync();
 
-                return Ok();
+                var scriptCode = await ReadServerFile(GetServerBackendScripts("print-content.ps1"));
+
+                var executeResult = ExecutePowerShell(scriptCode, fileContent);
+
+                return Ok(executeResult);
             }
             _logger.LogInformation("Not acceptable api input");
             return BadRequest(ModelState);
         }
 
+        private string GetServerBackendScripts(string scriptName)
+        {
+            return _hostingEnvironment.ContentRootPath + Path.DirectorySeparatorChar + "BackendScripts" +
+                   Path.DirectorySeparatorChar + scriptName;
+        }
+
+        private static async Task<string> ReadServerFile(string filePath)
+        {
+            using (var reader = System.IO.File.OpenText(filePath))
+            {
+                return await reader.ReadToEndAsync();
+            }
+        }
+
+        private static string ExecutePowerShell(string scriptCode, string inputParameter)
+        {
+            using (var powerShell = PowerShell.Create())
+            {
+                powerShell.AddScript(scriptCode);
+                powerShell.AddArgument(inputParameter);
+                var executeResults = powerShell.Invoke();
+                
+                return executeResults[0].ToString();
+            }
+            
+        }
     }
 }
