@@ -10,23 +10,15 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/AspNetCoreWithPowerShell/bin/Debug/netcoreapp2.2/AspNetCoreWithPowerShell.dll",
+            "program": "${workspaceFolder}/AspNetCoreWithPowerShell/bin/Debug/netcoreapp2.1/AspNetCoreWithPowerShell.dll",
             "args": [],
             "cwd": "${workspaceFolder}/AspNetCoreWithPowerShell",
             "stopAtEntry": false,
-            "launchBrowser": {
-                "enabled": true,
-                "args": "${auto-detect-url}/CallPwshDemo",
-                "windows": {
-                    "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}/CallPwshDemo"
-                },
-                "osx": {
-                    "command": "open"
-                },
-                "linux": {
-                    "command": "xdg-open",
-                }
+            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+http://\\S+:([0-9]+)",
+                "uriFormat": "http://localhost:%s/CallPwshDemo"
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
